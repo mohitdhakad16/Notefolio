@@ -1,0 +1,71 @@
+/* ========== Home.js CSS =========== */
+.box {
+    width: 60vw;
+    margin: auto;
+}
+
+@media (max-width: 990px) and (min-width: 320px) {
+    .box {
+        width: auto;
+        ;
+    }
+}
+
+/* ============ NoteItem.js CSS ============= */
+span {
+    cursor: pointer;
+}
+
+/* ========== ServerError.js CSS =============  */
+.serverImg img {
+    height: 100%;
+    width: 100%;
+}
+
+.serverImg {
+    height: 50px;
+    width: 50px;
+}
+
+.mainContent{
+    height: 80vh;
+    width: auto;
+}
+
+
+/* ============ Login.js CSS =============  */
+.login-container{
+    max-width: fit-content;
+    margin: auto;
+    box-shadow: 0px 0px 3px 0px black;
+}
+
+
+/* =========== Navbar User details page CSS  =============  */
+.userImg img{
+    height: 100%;
+    width: 100%;
+}
+
+.userImg{
+    height: 150px;
+    width: 150px;
+}
+
+/* ========== Navbar margin ========= */
+.mobile-margin {
+    margin-top: 0.5rem; /* 8px top margin */
+    margin-bottom: 0.5rem; /* 8px bottom margin */
+  }
+  
+  /* Apply the margin only for small screens and above (mobile screens) */
+  @media (min-width: 576px) {
+    .mobile-margin {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  }
+
+
+
+

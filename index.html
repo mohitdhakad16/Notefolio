@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JavaScript Code Editor</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/theme/monokai.min.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    .CodeMirror {
+      height: calc(70vh - 80px);
+    }
+
+    .CodeMirror-gutters {
+      background-color: #282c34;
+      border-right: 1px solid #555;
+    }
+
+    .CodeMirror-linenumber {
+      color: #000000;
+      background-color: #000000;
+    }
+
+    .CodeMirror-cursor {
+      border-left: 2px solid #ffffff;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #4f4f4f;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      margin: 10px;
+    }
+
+    button:hover {
+      background-color: #666;
+    }
+
+    #console {
+      height: 200px;
+      background-color: #1e1e1e;
+      color: #ffffff;
+      padding: 10px;
+      font-family: Consolas, monospace;
+      overflow-y: scroll;
+    }
+  </style>
+</head>
+<body>
+  <textarea id="code"></textarea>
+  <button onclick="runCode()">Run</button>
+  <button onclick="clearConsole()">Clear Console</button>
+  <div id="console"></div>
+  <select id="snippet-select" onchange="insertSnippet(this.value)">
+    <option value="">Select a snippet</option>
+    <option value="consoleLog">Console Log</option>
+    <option value="forLoop">For Loop</option>
+  </select>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/addon/edit/matchbrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/addon/edit/closebrackets.min.js"></script>
+  <script>
+    var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+      lineNumbers: true,
+      mode: "javascript",
+      theme: "monokai",
+      autofocus: true,
+      styleActiveLine: true,
+      matchBrackets: true,
+      autoCloseBrackets: true
+    });
+
+    var consoleElement = document.getElementById("console");
+    var outputCount = 1; // Start output count from 1
+
+    function runCode() {
+      consoleElement.innerHTML = ""; // Clear the console
+
+      var code = editor.getValue().trim();
+
+      if (code === "") {
+        alert("Please write some code before running!");
+        return;
+      }
+
+      var oldConsoleLog = console.log;
+      var output = "";
+
+      console.log = function(message) {
+        output += message + "\n";
+        oldConsoleLog.apply(console, arguments);
+      };
+
+      try {
+        eval(code);
+      } catch (error) {
+        console.log(error);
+      }
+
+      displayOutput(output);
+    }
+
+    function displayOutput(output) {
+      var newLine = document.createElement("div");
+      newLine.classList.add("output-line");
+      newLine.textContent = "> [" + outputCount + "] " + (output !== undefined ? output : "undefined");
+
+      consoleElement.appendChild(newLine);
+
+      var lineBreak = document.createElement("br");
+      consoleElement.appendChild(lineBreak); // Add a line break after each output
+
+      consoleElement.scrollTop = consoleElement.scrollHeight; // Auto-scroll to the latest output
+      outputCount++;
+    }
+
+    function clearConsole() {
+      consoleElement.innerHTML = "";
+      outputCount = 1; // Reset output count to 1
+    }
+
+    function insertSnippet(snippetId) {
+      if (!snippetId) {
+        return; // No snippet selected
+      }
+
+      const codeSnippets = {
+        consoleLog: "console.log();",
+        forLoop: "for (let i = 0; i < array.length; i++) {\n  // code here\n}"
+      };
+
+      const snippet = codeSnippets[snippetId];
+      if (snippet) {
+        var doc = editor.getDoc();
+        var cursor = doc.getCursor();
+        doc.replaceRange(snippet, cursor);
+      }
+    }
+  </script>
+</body>
+</html>
